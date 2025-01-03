@@ -41,74 +41,53 @@ export default function Signup() {
             <div>
               <input
                 type="radio"
-                id="standard"
-                name="hosting"
-                value="standard"
+                id="cut"
+                name="goal"
+                value="Cut"
+                onChange={(e) => setSelectedGoal(e.target.value)}
                 className="peer hidden"
                 required
               />
               <label
-                htmlFor="standard"
+                htmlFor="cut"
                 className="block w-full cursor-pointer rounded-lg border border-gray-300 p-4 text-gray-900 ring-1 ring-transparent peer-checked:border-gray-900 peer-checked:ring-gray-900"
               >
-                <div className="block">
-                  <Typography className="font-semibold">
-                    Cut
-                  </Typography>
-                  <Typography className="font-normal text-gray-600">
-                    For those who wish to cut body fat and get leaner{" "}
-                    <strong className="text-gray-900"></strong>
-                  </Typography>
-                </div>
+                <Typography className="font-semibold">Cut</Typography>
               </label>
             </div>
             <div>
               <input
                 type="radio"
-                id="express"
-                name="hosting"
+                id="maintain"
+                name="goal"
+                value="Maintain"
+                onChange={(e) => setSelectedGoal(e.target.value)}
                 defaultChecked
-                value="express"
                 className="peer hidden"
                 required
               />
               <label
-                htmlFor="express"
+                htmlFor="maintain"
                 className="block w-full cursor-pointer rounded-lg border border-gray-300 p-4 text-gray-900 ring-1 ring-transparent peer-checked:border-gray-900 peer-checked:ring-gray-900"
               >
-                <div className="block">
-                  <Typography className="font-semibold">
-                    Maintain
-                  </Typography>
-                  <Typography className="font-normal text-gray-600">
-                    For those who wish to maintain their weight, but also get stronger{" "}
-                    <strong className="text-gray-900"></strong>
-                  </Typography>
-                </div>
+                <Typography className="font-semibold">Maintain</Typography>
               </label>
             </div>
             <div>
               <input
                 type="radio"
-                id="store"
-                name="hosting"
-                value="store"
+                id="bulk"
+                name="goal"
+                value="Bulk"
+                onChange={(e) => setSelectedGoal(e.target.value)}
                 className="peer hidden"
                 required
               />
               <label
-                htmlFor="store"
+                htmlFor="bulk"
                 className="block w-full cursor-pointer rounded-lg border border-gray-300 p-4 text-gray-900 ring-1 ring-transparent peer-checked:border-gray-900 peer-checked:ring-gray-900"
               >
-                <div className="block">
-                  <Typography className="font-semibold">
-                    Bulk
-                  </Typography>
-                  <Typography className="font-normal text-gray-600">
-                    For those trying to get stronger and bigger{" "}
-                    <strong className="text-gray-900"></strong>
-                  </Typography>
-                </div>
+                <Typography className="font-semibold">Bulk</Typography>
               </label>
             </div>
           </div>
@@ -135,7 +114,7 @@ export default function Signup() {
             type="number"
             placeholder="Current Weight"
             value={currentWeight}
-            onChange={(e) => setCurrentWeight(e.target.value)}
+            onChange={(e) => setCurrentWeight(e.target.value ? Number(e.target.value) : "")}
             className="mt-2 p-2 border border-gray-300 rounded text-gray-900"
           />
           {selectedGoal === "Cut" || selectedGoal === "Bulk" ? (
@@ -143,7 +122,7 @@ export default function Signup() {
               type="number"
               placeholder="Goal Weight Change per Week"
               value={goalWeightChange}
-              onChange={(e) => setGoalWeightChange(e.target.value)}
+              onChange={(e) => setGoalWeightChange(e.target.value ? Number(e.target.value) : "")}
               className="mt-2 p-2 border border-gray-300 rounded text-gray-900"
             />
           ) : null}
@@ -173,14 +152,14 @@ export default function Signup() {
             type="number"
             placeholder="Age"
             value={age}
-            onChange={(e) => setAge(e.target.value)}
+            onChange={(e) => setAge(e.target.value ? Number(e.target.value) : "")}
             className="mt-2 p-2 border border-gray-300 rounded text-gray-900"
           />
           <input
             type="number"
             placeholder="Height (in cm)"
             value={height}
-            onChange={(e) => setHeight(e.target.value)}
+            onChange={(e) => setHeight(e.target.value ? Number(e.target.value) : "")}
             className="mt-2 p-2 border border-gray-300 rounded text-gray-900"
           />
         </DialogBody>
