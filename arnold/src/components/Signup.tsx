@@ -104,18 +104,17 @@ export default function Signup() {
 
       <Dialog size="sm" open={secondModalOpen} handler={() => setSecondModalOpen(false)} className="p-4">
         <DialogHeader className="relative m-0 block">
-          <Typography variant="h4" color="blue-gray">
-            Your Goal
+          <Typography variant="h2" className="text-gray-700 text-center">
+            Your Goal: {selectedGoal}
           </Typography>
         </DialogHeader>
         <DialogBody>
-          <Typography>Your goal is: {selectedGoal}</Typography>
           <input
             type="number"
             placeholder="Current Weight"
             value={currentWeight}
             onChange={(e) => setCurrentWeight(e.target.value ? Number(e.target.value) : "")}
-            className="mt-2 p-2 border border-gray-300 rounded text-gray-900"
+            className=" mt-2 p-2 border border-gray-300 rounded text-gray-900"
           />
           {selectedGoal === "Cut" || selectedGoal === "Bulk" ? (
             <input
@@ -127,7 +126,7 @@ export default function Signup() {
             />
           ) : null}
           <div className="mt-4">
-            <Typography>Training Intensity (1-5):</Typography>
+            <Typography variant="h5" className="text-gray-700">Training Intensity (1-5):</Typography>
             {[1, 2, 3, 4, 5].map((intensity) => (
               <div key={intensity}>
                 <input
@@ -164,6 +163,7 @@ export default function Signup() {
           />
         </DialogBody>
         <DialogFooter>
+          <button className="bg-white px-4 py-2 text-blue-700 rounded outline">Back</button>
           <button
             className="ml-auto bg-blue-500 px-4 py-2 text-white rounded"
             onClick={() => setSecondModalOpen(false)}
