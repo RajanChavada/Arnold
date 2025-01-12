@@ -41,6 +41,8 @@ app.post('/api/signup', async (req, res) => {
       height,
     });
 
+    // console log
+
     console.log(newUser);
 
     try {
