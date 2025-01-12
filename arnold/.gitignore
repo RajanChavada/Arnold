@@ -22,3 +22,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+
+node_modules/.bin/node
+node_modules/node/bin/node

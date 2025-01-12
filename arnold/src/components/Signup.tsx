@@ -20,9 +20,55 @@ export default function Signup() {
   const [height, setHeight] = React.useState(""); // State for height
 
   const handleOpen = () => setOpen((cur) => !cur);
-  const handleNext = () => {
+  const handleFirstModalSubmit = () => {
+    // Validate mandatory fields for the first modal
+    if (!selectedGoal) {
+      alert("Please select a fitness goal.");
+      return; // Prevent proceeding if validation fails
+    }
     setSecondModalOpen(true); // Open the second modal
     handleOpen(); // Close the first modal
+  };
+
+  const handleSecondModalSubmit = async () => {
+    // Validate mandatory fields for the second modal
+    if (!currentWeight || !age || !height) {
+      alert("Please fill in all mandatory fields.");
+      return; // Prevent proceeding if validation fails
+    }
+
+    // Prepare data to send
+    const userData = {
+      selectedGoal,
+      currentWeight,
+      goalWeightChange,
+      trainingIntensity,
+      age,
+      height,
+    };
+
+    try {
+      const response = await fetch('http://localhost:5001/api/signup', { // Update with your backend URL
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(userData),
+      });
+
+      if (response.ok) {
+        alert("Form submitted successfully!");
+        // Reset or close modals as needed
+        setSecondModalOpen(false);
+        setOpen(false);
+      } else {
+        const errorData = await response.json();
+        alert(`Error: ${errorData.message || 'Failed to submit form.'}`);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      alert("Error submitting form.");
+    }
   };
 
   return (
@@ -95,7 +141,7 @@ export default function Signup() {
         <DialogFooter>
           <button
             className="ml-auto bg-blue-500 px-4 py-2 text-white rounded"
-            onClick={handleNext}
+            onClick={handleFirstModalSubmit}
           >
             Next
           </button>
@@ -123,6 +169,7 @@ export default function Signup() {
               value={goalWeightChange}
               onChange={(e) => setGoalWeightChange(e.target.value ? Number(e.target.value) : "")}
               className="mt-2 p-2 border border-gray-300 rounded text-gray-900"
+              required
             />
           ) : null}
           <div className="mt-4">
@@ -153,20 +200,24 @@ export default function Signup() {
             value={age}
             onChange={(e) => setAge(e.target.value ? Number(e.target.value) : "")}
             className="mt-2 p-2 border border-gray-300 rounded text-gray-900"
+            required
           />
           <input
             type="number"
             placeholder="Height (in cm)"
             value={height}
             onChange={(e) => setHeight(e.target.value ? Number(e.target.value) : "")}
-            className="mt-2 p-2 border border-gray-300 rounded text-gray-900"
+            className=" t-2 p-2 border border-gray-300 rounded text-gray-900"
+            required
           />
         </DialogBody>
         <DialogFooter>
-          <button className="bg-white px-4 py-2 text-blue-700 rounded outline">Back</button>
+          <button className="bg-white px-4 py-2 text-blue-700 rounded outline" onClick={() => setSecondModalOpen(false)}>
+            Back
+          </button>
           <button
             className="ml-auto bg-blue-500 px-4 py-2 text-white rounded"
-            onClick={() => setSecondModalOpen(false)}
+            onClick={handleSecondModalSubmit}
           >
             Submit
           </button>
