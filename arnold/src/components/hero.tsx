@@ -4,7 +4,7 @@ export default function hero() {
     const navigate = useNavigate(); 
 
     const handleClick = () => { 
-        navigate("/signup"); 
+        navigate("/signup-login"); 
     }
 
   return (
