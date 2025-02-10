@@ -8,17 +8,21 @@ export default function Auth() {
     const [emailAddress, setEmailAddress] = useState(''); 
     const[password, setPassword] = useState(''); 
     const[confirmpassword, setConfirmPassword] = useState(''); 
+    const [errorMessage, setErrorMessage] = useState(''); // State for error messages
+    const [successMessage, setSuccessMessage] = useState(''); // State for success messages
 
     const handleSignup = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
         if (emailAddress === '' || password === '' || confirmpassword === '') {
-            alert('Please fill in all fields');
+            setErrorMessage('Please fill in all fields');
+            setSuccessMessage('');
             return;
         }
 
         if (password !== confirmpassword) {
-            alert('Passwords do not match');
+            setErrorMessage('Passwords do not match');
+            setSuccessMessage('');
             return;
         }
 
@@ -31,15 +35,19 @@ export default function Auth() {
         });
 
         if (response.ok) {
-            alert('User created successfully');
+            setSuccessMessage('User created successfully!');
+            setErrorMessage('');
             setEmailAddress('');
             setPassword('');
             setConfirmPassword('');
 
-            navigate('/signup');
+            setTimeout(() => {
+                navigate('/home', { replace: true });
+            }, 1000);
         } else {
             const errorData = await response.json();
-            alert(`Failed to create user: ${errorData.error || 'Unknown error'}`);
+            setErrorMessage(errorData.error || 'Failed to create user');
+            setSuccessMessage('');
         }
     };
 
@@ -48,7 +56,8 @@ export default function Auth() {
         event.preventDefault();
 
         if (emailAddress === '' || password === '') {
-            alert('Please fill in all fields');
+            setErrorMessage('Please fill in all fields');
+            setSuccessMessage('');
             return;
         }
 
@@ -61,19 +70,33 @@ export default function Auth() {
         });
 
         if (response.ok) {
-            alert('Login successful');
-            navigate('/signup');
+            setSuccessMessage('Login successful!');
+            setErrorMessage('');
+
+            setTimeout(() => {
+                navigate('/signup');
+            }, 2000);
         } else {
             const errorData = await response.json();
-            alert(`Failed to login: ${errorData.error || 'Unknown error'}`);
+            setErrorMessage(errorData.error || 'Failed to login');
+            setSuccessMessage('');
         }
-        
     };
 
 
     return (
 
         <>
+        {errorMessage && (
+                <div className="bg-red-500 text-white p-4 rounded mb-4">
+                    {errorMessage}
+                </div>
+            )}
+        {successMessage && (
+                <div className="bg-green-500 text-white p-4 rounded mb-4">
+                    {successMessage}
+                </div>
+            )}
         {isSignup
         
         ?
@@ -105,7 +128,7 @@ export default function Auth() {
                   onChange={(e) => setEmailAddress(e.target.value)}
                   required
                   autoComplete="email"
-                  className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-white outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+                  className="block w-full rounded-md bg-white text-black px-3 py-1.5 text-base outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
                 />
               </div>
             </div>
@@ -126,7 +149,7 @@ export default function Auth() {
                   onChange={(e) => setPassword(e.target.value)}
                   required
                   autoComplete="current-password"
-                  className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+                  className="block w-full rounded-md bg-white text-black px-3 py-1.5 text-base outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
                 />
               </div>
               
@@ -147,13 +170,12 @@ export default function Auth() {
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   required
                   autoComplete="current-password"
-                  className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+                  className="block w-full rounded-md bg-white text-black px-3 py-1.5 text-base outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
                 />
               </div>
               
             </div>
             
-
             <div>
               <button
                 type="submit"
@@ -202,7 +224,7 @@ export default function Auth() {
                 onChange={(e) => setEmailAddress(e.target.value)}
                 required
                 autoComplete="email"
-                className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-white outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+                className="block w-full rounded-md bg-white text-black px-3 py-1.5 text-base outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
               />
             </div>
           </div>
@@ -227,7 +249,7 @@ export default function Auth() {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 autoComplete="current-password"
-                className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+                className="block w-full rounded-md bg-white text-black px-3 py-1.5 text-base outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
               />
             </div>
           </div>

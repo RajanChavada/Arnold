@@ -8,8 +8,12 @@ import {
 } from "@material-tailwind/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function Signup() {
+
+  const navigate = useNavigate();
+
   const [open, setOpen] = React.useState(true); // Set to true to open on page load
   const [secondModalOpen, setSecondModalOpen] = React.useState(false); // State for the second modal
   const [selectedGoal, setSelectedGoal] = React.useState(""); // State to track selected goal
@@ -61,6 +65,8 @@ export default function Signup() {
         // Reset or close modals as needed
         setSecondModalOpen(false);
         setOpen(false);
+        navigate("/home");
+
       } else {
         const errorData = await response.json();
         alert(`Error: ${errorData.message || 'Failed to submit form.'}`);
@@ -160,7 +166,7 @@ export default function Signup() {
             placeholder="Current Weight"
             value={currentWeight}
             onChange={(e) => setCurrentWeight(e.target.value ? Number(e.target.value) : "")}
-            className=" mt-2 p-2 border border-gray-300 rounded text-gray-900"
+            className=" mt-2 p-2 border border-gray-300 rounded text-white"
           />
           {selectedGoal === "Cut" || selectedGoal === "Bulk" ? (
             <input
@@ -168,7 +174,7 @@ export default function Signup() {
               placeholder="Goal Weight Change per Week"
               value={goalWeightChange}
               onChange={(e) => setGoalWeightChange(e.target.value ? Number(e.target.value) : "")}
-              className="mt-2 p-2 border border-gray-300 rounded text-gray-900"
+              className="mt-2 p-2 border border-gray-300 rounded text-white"
               required
             />
           ) : null}
@@ -199,7 +205,7 @@ export default function Signup() {
             placeholder="Age"
             value={age}
             onChange={(e) => setAge(e.target.value ? Number(e.target.value) : "")}
-            className="mt-2 p-2 border border-gray-300 rounded text-gray-900"
+            className="mt-2 p-2 border border-gray-300 rounded text-white"
             required
           />
           <input
@@ -207,7 +213,7 @@ export default function Signup() {
             placeholder="Height (in cm)"
             value={height}
             onChange={(e) => setHeight(e.target.value ? Number(e.target.value) : "")}
-            className=" t-2 p-2 border border-gray-300 rounded text-gray-900"
+            className=" t-2 p-2 border border-gray-300 rounded text-white"
             required
           />
         </DialogBody>
