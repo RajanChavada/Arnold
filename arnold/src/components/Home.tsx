@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Card } from "./ui/card";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
@@ -11,6 +11,7 @@ import {
   SelectValue,
 } from "./ui/select";
 import { Edit2, Save } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 interface StatsPanelProps {
   currentWeight?: number;
@@ -25,6 +26,16 @@ interface Stats {
   age: number;
   goalWeight: number;
   fitnessGoal: string;
+}
+
+interface UserData {
+  email: string;
+  selectedGoal: string;
+  currentWeight: number;
+  goalWeightChange: number;
+  trainingIntensity: number;
+  age: number;
+  height: number;
 }
 
 const StatsPanel: React.FC<StatsPanelProps> = ({
@@ -129,14 +140,58 @@ const StatsPanel: React.FC<StatsPanelProps> = ({
 };
 
 const Home: React.FC = () => {
+  const [userData, setUserData] = useState<UserData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const email = localStorage.getItem('userEmail');
+        if (!email) {
+          navigate('/signup-login');
+          return;
+        }
+
+        const response = await fetch(`http://localhost:5001/api/user-data/${email}`);
+        const data = await response.json();
+
+        if (!data.hasData) {
+          navigate('/signup');
+          return;
+        }
+
+        setUserData(data);
+      } catch (err) {
+        console.error('Error fetching user data:', err);
+        setError('Failed to fetch user data');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUserData();
+  }, [navigate]);
+
   const handleStatsUpdate = (stats: Stats) => {
     console.log('Stats updated:', stats);
     // Here you can add API call to save stats
   };
 
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
+  if (!userData) return <div>No user data found</div>;
+
   return (
     <div className="container mx-auto p-4">
-      <StatsPanel onStatsUpdate={handleStatsUpdate} />
+      <StatsPanel 
+        currentWeight={userData.currentWeight}
+        age={userData.age}
+        goalWeight={userData.goalWeightChange}
+        fitnessGoal={userData.selectedGoal as "cutting" | "bulking" | "maintenance"}
+        onStatsUpdate={handleStatsUpdate}
+      />
     </div>
   );
 };

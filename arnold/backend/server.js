@@ -39,39 +39,58 @@ mongoose.connect(mongoURI)
 
 // Define a schema and model
 const userSchema = new mongoose.Schema({
+    email: String,
     selectedGoal: String,
     currentWeight: Number,
     goalWeightChange: Number,
     trainingIntensity: Number,
     age: Number,
     height: Number,
-    });
+});
 
 const User = mongoose.model('User', userSchema);
 
 
 // API endpoint to save user data
 app.post('/api/signup', async (req, res) => {
-    const { selectedGoal, currentWeight, goalWeightChange, trainingIntensity, age, height } = req.body;
+    const { email, selectedGoal, currentWeight, goalWeightChange, trainingIntensity, age, height } = req.body;
 
-    const newUser = new User({
-      selectedGoal,
-      currentWeight,
-      goalWeightChange,
-      trainingIntensity,
-      age,
-      height,
-    });
-
-    // console log
-
-    console.log(newUser);
+    if (!email) {
+        return res.status(400).json({ error: 'Email is required' });
+    }
 
     try {
-      await newUser.save();
-      res.status(201).send('User data saved successfully');
+        // Check if user data already exists for this email
+        const existingUserData = await User.findOne({ email });
+        if (existingUserData) {
+            // Update existing user data
+            existingUserData.selectedGoal = selectedGoal;
+            existingUserData.currentWeight = currentWeight;
+            existingUserData.goalWeightChange = goalWeightChange;
+            existingUserData.trainingIntensity = trainingIntensity;
+            existingUserData.age = age;
+            existingUserData.height = height;
+            
+            await existingUserData.save();
+            res.status(200).json({ message: 'User data updated successfully' });
+        } else {
+            // Create new user data
+            const newUser = new User({
+                email,
+                selectedGoal,
+                currentWeight,
+                goalWeightChange,
+                trainingIntensity,
+                age,
+                height,
+            });
+
+            await newUser.save();
+            res.status(201).json({ message: 'User data saved successfully' });
+        }
     } catch (error) {
-      res.status(400).send('Error saving user data');
+        console.error('Error saving user data:', error);
+        res.status(400).json({ error: 'Error saving user data' });
     }
   });
 
@@ -101,9 +120,12 @@ app.post('/api/signupnewuser', async (req, res) => {
             email, 
             password, 
         });
-
+        
         await newDBUser.save(); 
-        res.status(201).json({message: 'User created successfully'});
+        res.status(201).json({
+            message: 'User created successfully',
+            email: newDBUser.email
+        });
     } catch (error) {
         console.error('Signup error:', error);
         res.status(400).json({error: 'Error creating user'});
@@ -114,6 +136,7 @@ app.post('/api/signupnewuser', async (req, res) => {
 app.post('/api/login', async (req, res) => {
     const {email, password} = req.body; 
 
+
     // check if the email and password are valid 
     if (!email || !password) {
         return res.status(400).json({error: 'Email and password are required'});
@@ -122,13 +145,36 @@ app.post('/api/login', async (req, res) => {
     try {
         const user = await UserInformation.findOne({email, password}); 
         if (!user) {
+            
             return res.status(401).json({error: 'Invalid email or password'});
         }
 
-        res.status(200).json({message: 'Login successful'});
+        console.log("User data", user); 
+
+        res.status(200).json({
+            message: 'Login successful',
+            email: user.email
+        });
     } catch (error) {
         console.error('Login error:', error);
         res.status(400).json({error: 'Error logging in'});
+    }
+});
+
+// Add this new endpoint
+app.get('/api/user-data/:email', async (req, res) => {
+    try {
+        const { email } = req.params;
+        const userData = await User.findOne({ email });
+        
+        if (userData) {
+            res.status(200).json({ hasData: true });
+        } else {
+            res.status(200).json({ hasData: false });
+        }
+    } catch (error) {
+        console.error('Error checking user data:', error);
+        res.status(500).json({ error: 'Server error' });
     }
 });
 

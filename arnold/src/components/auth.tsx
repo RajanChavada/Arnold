@@ -35,14 +35,18 @@ export default function Auth() {
         });
 
         if (response.ok) {
-            setSuccessMessage('User created successfully!');
+            // Store email in localStorage for the signup process
+            localStorage.setItem('userEmail', emailAddress);
+            
+            setSuccessMessage('Account created successfully!');
             setErrorMessage('');
             setEmailAddress('');
             setPassword('');
             setConfirmPassword('');
 
+            // Navigate to signup page after a short delay
             setTimeout(() => {
-                navigate('/home', { replace: true });
+                navigate('/signup');
             }, 1000);
         } else {
             const errorData = await response.json();
@@ -61,24 +65,43 @@ export default function Auth() {
             return;
         }
 
-        const response = await fetch('http://localhost:5001/api/login', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ email: emailAddress, password }),
-        });
+        try {
+            // First, attempt to login
+            const loginResponse = await fetch('http://localhost:5001/api/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email: emailAddress, password }),
+            });
 
-        if (response.ok) {
-            setSuccessMessage('Login successful!');
-            setErrorMessage('');
+            if (loginResponse.ok) {
+                // Store email in localStorage
+                localStorage.setItem('userEmail', emailAddress);
+                
+                // If login successful, check if user has data
+                const userDataResponse = await fetch(`http://localhost:5001/api/user-data/${emailAddress}`);
+                const userData = await userDataResponse.json();
 
-            setTimeout(() => {
-                navigate('/signup');
-            }, 2000);
-        } else {
-            const errorData = await response.json();
-            setErrorMessage(errorData.error || 'Failed to login');
+                setSuccessMessage('Login successful!');
+                setErrorMessage('');
+
+                // Navigate based on whether user has data
+                setTimeout(() => {
+                    if (userData.hasData) {
+                        navigate('/home');
+                    } else {
+                        navigate('/signup');
+                    }
+                }, 1000);
+            } else {
+                const errorData = await loginResponse.json();
+                setErrorMessage(errorData.error || 'Failed to login');
+                setSuccessMessage('');
+            }
+        } catch (error) {
+            console.error('Login error:', error);
+            setErrorMessage('Error during login');
             setSuccessMessage('');
         }
     };

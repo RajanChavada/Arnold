@@ -43,6 +43,7 @@ export default function Signup() {
 
     // Prepare data to send
     const userData = {
+      email: localStorage.getItem('userEmail'), // Add email to userData
       selectedGoal,
       currentWeight,
       goalWeightChange,
