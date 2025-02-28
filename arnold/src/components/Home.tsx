@@ -53,6 +53,15 @@ const StatsPanel: React.FC<StatsPanelProps> = ({
     fitnessGoal,
   });
 
+  useEffect(() => { 
+    setStats({
+      currentWeight,
+      age,
+      goalWeight,
+      fitnessGoal,
+    }); 
+  }, [currentWeight, age, goalWeight, fitnessGoal]); 
+
   const handleSave = () => {
     setIsEditing(false);
     onStatsUpdate(stats);
@@ -162,7 +171,7 @@ const Home: React.FC = () => {
           return;
         }
 
-        setUserData(data);
+        setUserData(data.hasData);
       } catch (err) {
         console.error('Error fetching user data:', err);
         setError('Failed to fetch user data');
@@ -174,10 +183,46 @@ const Home: React.FC = () => {
     fetchUserData();
   }, [navigate]);
 
-  const handleStatsUpdate = (stats: Stats) => {
-    console.log('Stats updated:', stats);
-    // Here you can add API call to save stats
+
+  const mapGoalToFitnessGoal = (goal: string): "cutting" | "bulking" | "maintenance" => {
+    const goalMap: { [key: string]: "cutting" | "bulking" | "maintenance" } = {
+      "Cut": "cutting",
+      "Bulk": "bulking",
+      "Maintain": "maintenance"
+    };
+    return goalMap[goal] || "maintenance";
   };
+
+  const handleStatsUpdate = async (stats: Stats) => {
+    if (!userData) return;
+  
+    const requestOptions = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: userData.email, // Pass the email
+        currentWeight: stats.currentWeight, 
+        age: stats.age, 
+        goalWeight: stats.goalWeight, 
+        fitnessGoal: stats.fitnessGoal
+      }),
+    };
+  
+    try {
+      const response = await fetch('http://localhost:5001/api/updateStats', requestOptions);
+  
+      if (!response.ok) {
+        throw new Error('Failed to update stats');
+      }
+  
+      const data = await response.json();
+      console.log('Stats updated successfully:', data);
+  
+    } catch (error) {
+      console.error('Error updating stats:', error);
+    }
+  };
+  
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
@@ -189,11 +234,13 @@ const Home: React.FC = () => {
         currentWeight={userData.currentWeight}
         age={userData.age}
         goalWeight={userData.goalWeightChange}
-        fitnessGoal={userData.selectedGoal as "cutting" | "bulking" | "maintenance"}
+        fitnessGoal={mapGoalToFitnessGoal(userData.selectedGoal)}
         onStatsUpdate={handleStatsUpdate}
       />
     </div>
   );
 };
 
+
 export default Home;
+
