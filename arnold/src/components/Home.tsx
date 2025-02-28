@@ -186,9 +186,9 @@ const Home: React.FC = () => {
 
   const mapGoalToFitnessGoal = (goal: string): "cutting" | "bulking" | "maintenance" => {
     const goalMap: { [key: string]: "cutting" | "bulking" | "maintenance" } = {
-      "Cut": "cutting",
-      "Bulk": "bulking",
-      "Maintain": "maintenance"
+      "cutting": "cutting",
+      "bulking": "bulking",
+      "maintenance": "maintenance"
     };
     return goalMap[goal] || "maintenance";
   };
@@ -200,28 +200,49 @@ const Home: React.FC = () => {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        email: userData.email, // Pass the email
-        currentWeight: stats.currentWeight, 
-        age: stats.age, 
-        goalWeight: stats.goalWeight, 
-        fitnessGoal: stats.fitnessGoal
+        email: userData.email,
+        currentWeight: stats.currentWeight,
+        age: stats.age,
+        goalWeight: stats.goalWeight,
+        fitnessGoal: stats.fitnessGoal, // ✅ Ensure this is sent correctly
       }),
     };
   
     try {
       const response = await fetch('http://localhost:5001/api/updateStats', requestOptions);
-  
-      if (!response.ok) {
-        throw new Error('Failed to update stats');
-      }
+      if (!response.ok) throw new Error('Failed to update stats');
   
       const data = await response.json();
       console.log('Stats updated successfully:', data);
+  
+      // ✅ Fetch latest user data again to ensure frontend updates
+      fetchUpdatedUserData();
   
     } catch (error) {
       console.error('Error updating stats:', error);
     }
   };
+  
+  // ✅ Function to re-fetch user data from the API
+  const fetchUpdatedUserData = async () => {
+    try {
+      const email = localStorage.getItem('userEmail');
+      if (!email) return;
+  
+      const response = await fetch(`http://localhost:5001/api/user-data/${email}`);
+      const data = await response.json();
+  
+      if (data.hasData) {
+
+        console.log(data.hasData); 
+        setUserData(data.hasData); 
+      }
+    } catch (error) {
+      console.error('Error fetching updated user data:', error);
+    }
+  };
+  
+  
   
 
   if (loading) return <div>Loading...</div>;

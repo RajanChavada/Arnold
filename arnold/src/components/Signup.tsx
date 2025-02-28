@@ -96,8 +96,8 @@ export default function Signup() {
                 type="radio"
                 id="cut"
                 name="goal"
-                value="Cut"
-                onChange={(e) => setSelectedGoal(e.target.value)}
+                value="Cutting"
+                onChange={(e) => setSelectedGoal(e.target.value.toLowerCase())}
                 className="peer hidden"
                 required
               />
@@ -113,8 +113,8 @@ export default function Signup() {
                 type="radio"
                 id="maintain"
                 name="goal"
-                value="Maintain"
-                onChange={(e) => setSelectedGoal(e.target.value)}
+                value="Maintainence"
+                onChange={(e) => setSelectedGoal(e.target.value.toLowerCase())}
                 defaultChecked
                 className="peer hidden"
                 required
@@ -131,8 +131,8 @@ export default function Signup() {
                 type="radio"
                 id="bulk"
                 name="goal"
-                value="Bulk"
-                onChange={(e) => setSelectedGoal(e.target.value)}
+                value="Bulking"
+                onChange={(e) => setSelectedGoal(e.target.value.toLowerCase())}
                 className="peer hidden"
                 required
               />
@@ -169,7 +169,7 @@ export default function Signup() {
             onChange={(e) => setCurrentWeight(e.target.value ? Number(e.target.value) : "")}
             className=" mt-2 p-2 border border-gray-300 rounded text-white"
           />
-          {selectedGoal === "Cut" || selectedGoal === "Bulk" ? (
+          {selectedGoal === "cutting" || selectedGoal === "bulking" ? (
             <input
               type="number"
               placeholder="Goal Weight Change per Week"

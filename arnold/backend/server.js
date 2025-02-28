@@ -179,26 +179,29 @@ app.get('/api/user-data/:email', async (req, res) => {
 });
 
 app.post('/api/updateStats', async (req, res) => {
-    const {currentWeight, age, goalWeight, fitnessGoal} = req.body; 
+    const { email, currentWeight, age, goalWeight, fitnessGoal } = req.body; 
 
-    if (!email || !currentWeight || !age || !goalWeight || !fitnessGoal) {
+    if (!email || currentWeight === undefined || age === undefined || goalWeight === undefined || !fitnessGoal) {
         return res.status(400).json({ error: 'Missing required fields' });
     }
 
+    console.log("Updating user with:", email, currentWeight, age, goalWeight, fitnessGoal);
+
     try { 
-        const user = await User.fidnOne({ email}); 
+        const user = await User.findOneAndUpdate(
+            { email }, 
+            { 
+                currentWeight, 
+                age,  
+                goalWeightChange: goalWeight, 
+                selectedGoal: fitnessGoal, 
+            },
+            { new: true } // ✅ Return the updated document
+        );
 
-        if(!user) { 
-            return res.status(404).json({error: 'USer not found'});
+        if (!user) { 
+            return res.status(404).json({ error: 'User not found' });
         }
-
-        user.currentWeight = currentWeight;
-        user.age = age;
-        user.goalWeight = goalWeight;
-        user.fitnessGoal = fitnessGoal;
-
-        // Save the updated user data in the database
-        await user.save();
 
         res.status(200).json({ message: 'User stats updated successfully', user });
     }
@@ -206,8 +209,8 @@ app.post('/api/updateStats', async (req, res) => {
         console.error('Error updating stats:', error);
         res.status(500).json({ error: 'Failed to update stats' });
     }
-
 });
+
 
   // Start the server
   app.listen(PORT, () => {
