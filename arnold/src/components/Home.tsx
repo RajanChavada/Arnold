@@ -3,6 +3,7 @@ import { Card } from "./ui/card";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Button } from "./ui/button";
+import { AiTrainer } from './AiTrainer';
 import {
   Select,
   SelectContent,
@@ -68,83 +69,97 @@ const StatsPanel: React.FC<StatsPanelProps> = ({
   };
 
   return (
-    <Card className="p-6 bg-background border-border">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-2xl font-bold text-foreground">Fitness Stats</h2>
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => (isEditing ? handleSave() : setIsEditing(true))}
-        >
-          {isEditing ? (
-            <Save className="h-4 w-4" />
-          ) : (
-            <Edit2 className="h-4 w-4" />
-          )}
-        </Button>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="space-y-2">
-          <Label htmlFor="currentWeight">Current Weight (kg)</Label>
-          <Input
-            id="currentWeight"
-            type="number"
-            value={stats.currentWeight}
-            disabled={!isEditing}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              setStats({ ...stats, currentWeight: parseFloat(e.target.value) })
-            }
-          />
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="age">Age</Label>
-          <Input
-            id="age"
-            type="number"
-            value={stats.age}
-            disabled={!isEditing}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              setStats({ ...stats, age: parseInt(e.target.value) })
-            }
-          />
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="goalWeight">Goal Weight (kg)</Label>
-          <Input
-            id="goalWeight"
-            type="number"
-            value={stats.goalWeight}
-            disabled={!isEditing}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              setStats({ ...stats, goalWeight: parseFloat(e.target.value) })
-            }
-          />
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="fitnessGoal">Fitness Goal</Label>
-          <Select
-            disabled={!isEditing}
-            value={stats.fitnessGoal}
-            onValueChange={(value: string) =>
-              setStats({ ...stats, fitnessGoal: value })
-            }
+    <>
+      <Card className="p-6 bg-background  bg-white text-black">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-2xl font-bold text-foreground">Fitness Stats</h2>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => (isEditing ? handleSave() : setIsEditing(true))}
           >
-            <SelectTrigger>
-              <SelectValue placeholder="Select goal" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="cutting">Cutting</SelectItem>
-              <SelectItem value="bulking">Bulking</SelectItem>
-              <SelectItem value="maintenance">Maintenance</SelectItem>
-            </SelectContent>
-          </Select>
+            {isEditing ? (
+              <Save className="h-4 w-4" />
+            ) : (
+              <Edit2 className="h-4 w-4" />
+            )}
+          </Button>
         </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="space-y-2">
+            <Label htmlFor="currentWeight">Current Weight (kg)</Label>
+            <Input
+              id="currentWeight"
+              type="number"
+              value={stats.currentWeight}
+              disabled={!isEditing}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setStats({ ...stats, currentWeight: parseFloat(e.target.value) })
+              }
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="age">Age</Label>
+            <Input
+              id="age"
+              type="number"
+              value={stats.age}
+              disabled={!isEditing}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setStats({ ...stats, age: parseInt(e.target.value) })
+              }
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="goalWeight">Goal Weight (kg)</Label>
+            <Input
+              id="goalWeight"
+              type="number"
+              value={stats.goalWeight}
+              disabled={!isEditing}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setStats({ ...stats, goalWeight: parseFloat(e.target.value) })
+              }
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="fitnessGoal">Fitness Goal</Label>
+            <Select
+              disabled={!isEditing}
+              value={stats.fitnessGoal}
+              onValueChange={(value: string) =>
+                setStats({ ...stats, fitnessGoal: value })
+              }
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select goal" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="cutting">Cutting</SelectItem>
+                <SelectItem value="bulking">Bulking</SelectItem>
+                <SelectItem value="maintenance">Maintenance</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+      </Card >
+      <div className="grid grid-cols-2 gap-4"> 
+        <Card className="p-6 bg-background  bg-white text-black mt-5">
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-2xl font-bold text-black">Training <AiTrainer /> </h2>
+          </div>   
+        </Card>
+        <Card className="p-6 bg-background  bg-white text-black mt-5">
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-2xl font-bold text-black">Something Else</h2>
+          </div>   
+        </Card>
       </div>
-    </Card>
+    </>
   );
 };
 
@@ -152,6 +167,7 @@ const Home: React.FC = () => {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState(''); // State for success messages
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -213,7 +229,15 @@ const Home: React.FC = () => {
       if (!response.ok) throw new Error('Failed to update stats');
   
       const data = await response.json();
+
+      setSuccessMessage('Successfully updated user statistics!'); 
+
+      setTimeout(() => { 
+        setSuccessMessage('');
+      }, 2000); 
+
       console.log('Stats updated successfully:', data);
+
   
       // ✅ Fetch latest user data again to ensure frontend updates
       fetchUpdatedUserData();
@@ -251,6 +275,9 @@ const Home: React.FC = () => {
 
   return (
     <div className="container mx-auto p-4">
+      <>{successMessage && (
+        <div className="bg-green-700 text-white p-4 rounded mb-4">{ successMessage }</div>
+      )}</>
       <StatsPanel 
         currentWeight={userData.currentWeight}
         age={userData.age}
