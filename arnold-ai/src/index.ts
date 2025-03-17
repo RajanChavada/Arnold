@@ -844,12 +844,4 @@ var index_default = {
 export {
   index_default as default
 };
-/*! Bundled license information:
 
-mustache/mustache.mjs:
-  (*!
-   * mustache.js - Logic-less {{mustache}} templates with JavaScript
-   * http://github.com/janl/mustache.js
-   *)
-*/
-//# sourceMappingURL=index.js.map

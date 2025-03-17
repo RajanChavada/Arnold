@@ -4,6 +4,7 @@ import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Button } from "./ui/button";
 import { AiTrainer } from './AiTrainer';
+import { DietTrainer } from "./DietTrainer"
 import {
   Select,
   SelectContent,
@@ -153,10 +154,18 @@ const StatsPanel: React.FC<StatsPanelProps> = ({
             <h2 className="text-2xl font-bold text-black">Training <AiTrainer /> </h2>
           </div>   
         </Card>
-        <Card className="p-6 bg-background  bg-white text-black mt-5">
+        <Card className="p-6 bg-background bg-white text-black mt-5 h-[600px] overflow-hidden">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-2xl font-bold text-black">Something Else</h2>
+            <h2 className="text-2xl font-bold text-black">Diet Plan</h2>
           </div>   
+          <div className="h-[calc(100%-4rem)] overflow-y-auto scrollbar-custom">
+            <DietTrainer 
+              currentWeight={stats.currentWeight}
+              goalWeight={stats.goalWeight}
+              fitnessGoal={stats.fitnessGoal}
+              age={stats.age}
+            />
+          </div>
         </Card>
       </div>
     </>
