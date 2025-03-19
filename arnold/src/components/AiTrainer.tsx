@@ -1,4 +1,4 @@
-import React, { useState, FormEvent, KeyboardEvent } from 'react';
+import React, { useState, FormEvent, KeyboardEvent, useEffect } from 'react';
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import ReactMarkdown from 'react-markdown';
@@ -8,6 +8,50 @@ export const AiTrainer: React.FC = () => {
   const [response, setResponse] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Function to handle AI queries
+  const handleAIQuery = async (promptText: string) => {
+    setLoading(true);
+    setError(null);
+    try {
+        const res = await fetch('https://arnold-ai.jradesinfo.workers.dev/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ prompt: promptText }),
+        });
+
+        const data = await res.json();
+        console.log('AI Response:', data);
+        
+        if (data.success && data.response) {
+            setResponse(data.response.response || 'No content in response');
+        } else {
+            throw new Error('Invalid response format');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        setError(error.message || 'Failed to process request');
+        setResponse('');
+    } finally {
+        setLoading(false);
+    }
+  };
+
+  // Load initial workout plan on mount
+  useEffect(() => {
+    const initialPrompt = `As training expert I need you to lay out a 4-5 workout split consisting of 
+          high volume intensity workouts where the person must train till failure 
+          hitting all muscle groups twice maybe legs once a week, also training abs (mainly just 
+          leg raises and cable crunches nothing too long), as well as rest time in between 
+          tracking of progression of the lifts, include some compound movements in each day. 
+          lets give options for PPL, maybe chest+tri, back+bicep, legs+shoulders, arms+shoulders, back+chest. 
+          Anything else you see fit. You must give a challenging plan that pushes the person and makes for optimal 
+          gains`;
+    
+    handleAIQuery(initialPrompt);
+  }, []); // Empty dependency array means it only runs once on mount
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -55,7 +99,6 @@ export const AiTrainer: React.FC = () => {
     <div className="w-full space-y-4">
       <form onSubmit={handleSubmit} className="space-y-4">
         <Input
-
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}

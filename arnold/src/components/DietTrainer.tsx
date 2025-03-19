@@ -9,13 +9,15 @@ interface DietTrainerProper {
     goalWeight: number;
     fitnessGoal: string;
     age: number;
+    dietType: 'nonvegetarian' | 'vegetarian' | 'vegan';  // Add this new prop
 }
 
 export const DietTrainer: React.FC<DietTrainerProper> = ({
     currentWeight,
     goalWeight,
     fitnessGoal,
-    age
+    age, 
+    dietType
 }) => { 
 
     const weightDiff = goalWeight - currentWeight;
@@ -38,6 +40,7 @@ export const DietTrainer: React.FC<DietTrainerProper> = ({
     - Goal weight: ${goalWeight}kg (needs to ${goalType} ${weightChange}kg)
     - Fitness goal: ${fitnessGoal}
     - Age: ${age}
+    - Diet Type: ${dietType}
 
     Please provide:
     1. Daily caloric needs based on their stats
@@ -49,7 +52,7 @@ export const DietTrainer: React.FC<DietTrainerProper> = ({
     Format the response in a clear, organized way with sections and bullet points.`;
 };
 
-        // Function to handle AI queries
+    // Function to handle AI queries
     const handleAIQuery = async (promptText: string) => {
         setLoading(true);
         setError(null);
@@ -82,7 +85,7 @@ export const DietTrainer: React.FC<DietTrainerProper> = ({
     // Load initial personalized diet information when component mounts or when props change
     useEffect(() => {
         handleAIQuery(generateInitialPrompt());
-    }, [currentWeight, goalWeight, fitnessGoal, age]);
+    }, [currentWeight, goalWeight, fitnessGoal, age, dietType]);
     
     return (
         <div className="w-full max-w-4xl mx-auto">
@@ -94,7 +97,7 @@ export const DietTrainer: React.FC<DietTrainerProper> = ({
 
             {loading ? (
                 <div className="p-4 bg-gray-50 rounded">
-                    <p className="text-gray-600">Generating your personalized diet plan...</p>
+                    <p className="text-gray-600">Generating your personalized {dietType} diet plan...</p>
                 </div>
             ) : response && (
                 <div className="p-6 bg-white rounded-lg prose prose-white max-w-none">
