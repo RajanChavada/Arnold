@@ -109,7 +109,7 @@ export default function Auth() {
 
     return (
 
-        <>
+        < >
         {errorMessage && (
                 <div className="bg-red-500 text-white p-4 rounded mb-4">
                     {errorMessage}
@@ -124,8 +124,8 @@ export default function Auth() {
         
         ?
 
-        <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
-        <div className="sm:mx-auto sm:w-full sm:max-w-sm">
+        <div className="flex min-h-screen flex-1 flex-col justify-center px-6 py-12 lg:px-8 bg-gradient-to-r from-black to-indigo-700">
+        <div className="sm:mx-auto sm:w-full sm:max-w-sm ">
           <img
             alt="Your Company"
             src="https://tailwindui.com/plus/img/logos/mark.svg?color=indigo&shade=600"
@@ -220,7 +220,7 @@ export default function Auth() {
 
       : 
 
-      <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
+      <div className="flex min-h-screen flex-1 flex-col justify-center px-6 py-12 lg:px-8 bg-gradient-to-r from-black to-indigo-700">
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
         <img
           alt="Your Company"

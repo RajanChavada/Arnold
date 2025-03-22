@@ -9,7 +9,20 @@ export const AiTrainer: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Function to handle AI queries
+
+  const generateInitialPrompt = () => {
+    return `As training expert I need you to lay out a 4-5 workout split consisting of 
+          high volume intensity workouts where the person must train till failure 
+          hitting all muscle groups twice maybe legs once a week, also training abs (mainly just 
+          leg raises and cable crunches nothing too long), as well as rest time in between 
+          tracking of progression of the lifts, include some compound movements in each day. 
+          lets give options for PPL, maybe chest+tri, back+bicep, legs+shoulders, arms+shoulders, back+chest. 
+          Anything else you see fit. You must give a challenging plan that pushes the person and makes for optimal 
+          gains`;
+};
+
+
+// Function to handle AI queries
   const handleAIQuery = async (promptText: string) => {
     setLoading(true);
     setError(null);
@@ -39,19 +52,18 @@ export const AiTrainer: React.FC = () => {
     }
   };
 
-  // Load initial workout plan on mount
+  // Load initial personalized diet information when component mounts or when props change
   useEffect(() => {
-    const initialPrompt = `As training expert I need you to lay out a 4-5 workout split consisting of 
-          high volume intensity workouts where the person must train till failure 
-          hitting all muscle groups twice maybe legs once a week, also training abs (mainly just 
-          leg raises and cable crunches nothing too long), as well as rest time in between 
-          tracking of progression of the lifts, include some compound movements in each day. 
-          lets give options for PPL, maybe chest+tri, back+bicep, legs+shoulders, arms+shoulders, back+chest. 
-          Anything else you see fit. You must give a challenging plan that pushes the person and makes for optimal 
-          gains`;
-    
-    handleAIQuery(initialPrompt);
-  }, []); // Empty dependency array means it only runs once on mount
+    const loadInitialWorkout = async () => {
+      const initialLoad = localStorage.getItem('initialTrainerLoad');
+      if (!initialLoad) {
+        await handleAIQuery(generateInitialPrompt());
+        localStorage.setItem('initialTrainerLoad', 'true');
+      }
+    };
+
+    loadInitialWorkout();
+  }, [generateInitialPrompt]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -99,6 +111,7 @@ export const AiTrainer: React.FC = () => {
     <div className="w-full space-y-4">
       <form onSubmit={handleSubmit} className="space-y-4">
         <Input
+
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
