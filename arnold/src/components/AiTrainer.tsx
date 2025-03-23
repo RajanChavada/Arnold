@@ -18,7 +18,7 @@ export const AiTrainer: React.FC = () => {
           tracking of progression of the lifts, include some compound movements in each day. 
           lets give options for PPL, maybe chest+tri, back+bicep, legs+shoulders, arms+shoulders, back+chest. 
           Anything else you see fit. You must give a challenging plan that pushes the person and makes for optimal 
-          gains`;
+          gains, also query the web and find guiding youtube videos for complex workouts that might not be simple to perform`;
 };
 
 
