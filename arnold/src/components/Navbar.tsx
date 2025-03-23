@@ -1,4 +1,4 @@
-import { HashLink } from 'react-router-hash-link';
+import { Link } from 'react-scroll';
 import { useNavigate } from 'react-router-dom';
 
 export default function Navbar() {
@@ -19,16 +19,10 @@ export default function Navbar() {
 
           {/* Desktop Navigation (Centered) */}
           <div className="hidden md:flex flex-1 justify-center space-x-6">
-            <HashLink
-              smooth
-              to="/#features"
-              className="text-gray-600 dark:text-gray-300 hover:text-blue-500 transition"
-            >
-              Features
-            </HashLink>
-            <a href="#" className="text-gray-600 dark:text-gray-300 hover:text-blue-500 transition">About</a>
-            <a href="#" className="text-gray-600 dark:text-gray-300 hover:text-blue-500 transition">Services</a>
-            <a href="#" className="text-gray-600 dark:text-gray-300 hover:text-blue-500 transition">Contact</a>
+            <a href="#" className="text-gray-600 dark:text-gray-300 hover:text-blue-500 transition"><Link to="features" smooth={true} duration={500}>Features</Link></a>
+            <a href="#" className="text-gray-600 dark:text-gray-300 hover:text-blue-500 transition"><Link to="about" smooth={true} duration={500}>About</Link></a>
+            <a href="#" className="text-gray-600 dark:text-gray-300 hover:text-blue-500 transition"><Link to="services" smooth={true} duration={500}>Services</Link></a>
+            <a href="#" className="text-gray-600 dark:text-gray-300 hover:text-blue-500 transition"><Link to="contact" smooth={true} duration={500}>Contact</Link></a>
           </div>
 
           {/* Call-to-Action Button */}
